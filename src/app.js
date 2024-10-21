@@ -2,16 +2,16 @@ const express = require("express");
 const app = express();
 const port = 4000;
 
-app.get("/", (req, res) => {
-    res.send("Dashboard Page");
+app.get("/user", (req, res) => {
+    res.send("waiting for the to come");
 });
 
-app.get("/login", (req, res) => {
-    res.send("Login Page");
+app.post("/user", (req, res) => {
+    res.send({name : "Akshay Shetgar", City : "Gulbarga"});
 });
 
-app.get("/home", (req, res) => {
-    res.send("Home Page");
+app.delete("/user", (req, res) => {
+    res.send("Deleted successfully...");
 });
 
 app.listen(port, () => {
