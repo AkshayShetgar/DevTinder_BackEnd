@@ -2,28 +2,73 @@ const express = require("express");
 const { connectDB } = require("./config/database");
 const User = require("./models/users");
 const app = express();
+const {signupValidation} = require("./utils/validation");
+const bcrypt = require("bcrypt");
+const cookieParser = require("cookie-parser");
+const jwt = require("jsonwebtoken");
 const port = 3000;
 
 app.use(express.json());
+app.use(cookieParser());
 
 app.post("/signup", async (req, res) => {
   try{
-    if(req.body.skills.length > 10){
-      throw new Error("Skills cannot be more then 10");
+    signupValidation(req);
+    const {firstName, lastName, password, emailId} = req.body;
+    const passwordHash = await bcrypt.hash(password, 10);
+    const user = new User({
+      firstName, lastName, password : passwordHash, emailId
+    });
+    await user.save();
+    res.send("User added successfully...");
+  }catch(err) {
+    res.status(400).send("ERROR :" + err.message);
+  }
+});
+
+app.post("/login", async (req, res) => {
+  try{
+    const {emailId, password} = req.body;
+    const checkEmail = await User.findOne({emailId});
+    if(!checkEmail){
+      throw new Error("Invalid credentials");
     }
-      const user = new User(req.body);
-      await user.save();
-      res.send("User added successfully...");
+    const isPassword = await bcrypt.compare(password, checkEmail.password);
+    if(isPassword){
+      const token = await jwt.sign({_id : checkEmail._id}, "DEV@TINDER123");
+      res.cookie("token", token);
+      res.send("Login Successfully");
+    }else{
+      throw new Error("Invalid credentials");
+    }
   }catch(err){
     res.status(400).send(err.message);
   }
+});
 
+app.get("/profile", async (req, res) =>{
+  try{
+    const cookie = req.cookies;
+    const {token} = cookie;
+    if(!token){
+      throw new Error("Invalid Token");
+    }
+    const decode = await jwt.verify(token, "DEV@TINDER123");
+    const {_id} = decode;
+    const user = await User.findById(_id);
+    if(!user){
+      throw new Error("User does not exists");
+    }
+    res.send(user);
+  }catch(err){
+    res.status(400).send(err.message);
+  }
 });
 
 app.get("/userName", async (req, res) => {
-  const mail = req.body.emailId;
+  const {emailId} = req.body;
   try {
-    const userName = await User.find({ emailId: mail });
+    const userName = await User.find({emailId});
     res.send(userName);
   } catch (err) {
     res.status(400).send("User not found");

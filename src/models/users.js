@@ -1,48 +1,63 @@
-const mongoose  = require("mongoose");
+const mongoose = require("mongoose");
+const validator = require("validator");
+const { default: isEmail } = require("validator/lib/isEmail");
 
-const userSchema = mongoose.Schema({
-    firstName : {
-        type : String,
-        required : true, 
-        minLength : 4,
-        maxLength : 30,
+const userSchema = mongoose.Schema(
+  {
+    firstName: {
+      type: String,
+      required: true,
+      minLength: 4,
+      maxLength: 30,
     },
-    lastName : {
-        type : String,
+    lastName: {
+      type: String,
     },
-    emailId : {
-        type : String,
-        required : true,
-        unique : true,
-        lowercase : true,
-        trim : true,
-    },
-    password : {
-        type : String,
-        required : true
-    },
-    age : {
-        type : Number,
-        min : 18,
-    },
-    gender : {
-        type : String,
-        validate(value){
-            if(!["male", "female", "other"].includes(value)){
-                throw new Error("Gendrr data is not valid");
-            }
+    emailId: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+      trim: true,
+      validate(value) {
+        if (!validator.isEmail(value)) {
+          throw new Error("Invalid email adress");
         }
+      },
     },
-    photoUrl : {
-        type : String,
+    password: {
+      type: String,
+      required: true,
     },
-    about : {
-        type : String,
+    age: {
+      type: Number,
+      min: 18,
     },
-    skills : {
-        type : [String],
+    gender: {
+      type: String,
+      validate(value) {
+        if (!["male", "female", "other"].includes(value)) {
+          throw new Error("Gender data is not valid");
+        }
+      },
     },
-},{timestamps : true});
+    photoUrl: {
+      type: String,
+      validate(value){
+        if(!validator.isURL(value)){
+            throw new Error('Invalid photo URL');
+        }
+      },
+    },
+    about: {
+      type: String,
+    },
+    skills: {
+      type: [String],
+    },
+  },
+  { timestamps: true }
+);
 
 const User = mongoose.model("User", userSchema);
 
