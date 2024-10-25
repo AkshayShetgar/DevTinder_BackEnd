@@ -39,4 +39,5 @@ profileRouter.get("/profile/view", userAuth, async (req, res) =>{
     res.send("Password updated successfully");
   });
 
+
 module.exports = profileRouter;
