@@ -7,13 +7,11 @@
 - GET /profile/edit
 - GET /profile/password
 
-- POST /request/send/intrested/:userID
-- POST /request/send/ignored/:userId
-- POST /connection/review/accepted/:requestId
-- POST /connection/review/rejected/:requestId
+- POST /request/send/:status/:userID
+- POST /request/review/:status/:requestId
 
+- GET /user/requests/received
 - GET /user/connections
-- GET /user/request
 - GET /user/feed
 
 
