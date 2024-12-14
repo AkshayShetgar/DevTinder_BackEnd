@@ -32,7 +32,7 @@ authRouter.post("/signup", async (req, res) => {
       if(isPassword){
         const token = await jwt.sign({_id : checkEmail._id}, "DEV@TINDER123", {expiresIn : "10h"});
         res.cookie("token", token);
-        res.send("Login Successfully");
+        res.send(checkEmail);
       }else{
         throw new Error("Invalid credentials");
       }
