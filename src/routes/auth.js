@@ -9,10 +9,10 @@ const {signupValidation} = require("../utils/validation");
 authRouter.post("/signup", async (req, res) => {
     try{
       signupValidation(req);
-      const {firstName, lastName, password, emailId, age, skills, about, photoUrl} = req.body;
+      const {firstName, lastName, password, emailId} = req.body;
       const passwordHash = await bcrypt.hash(password, 10);
       const user = new User({
-        firstName, lastName, password : passwordHash, emailId, age, skills, about, photoUrl
+        firstName, lastName, password : passwordHash, emailId
       });
       const savedUser = await user.save();
       const token = await jwt.sign({_id : savedUser._id}, "DEV@TINDER123", {expiresIn : "10h"});
