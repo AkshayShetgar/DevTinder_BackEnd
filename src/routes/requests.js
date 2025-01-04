@@ -4,6 +4,8 @@ const {userAuth} = require("../middleware/auth");
 const ConnectionRequest = require("../models/connectionRequest");
 const User = require("../models/users");
 
+const sendEmail = require("../utils/sendEmail");
+
 requestRouter.post("/request/send/:status/:receiverId",userAuth, async (req, res) => {
   try{
     const senderId = req.user._id;
@@ -35,7 +37,11 @@ requestRouter.post("/request/send/:status/:receiverId",userAuth, async (req, res
     const connectionRequest = new ConnectionRequest({
       senderId, receiverId, status
     });
+
     const data = await connectionRequest.save();
+    const emailRes = await sendEmail.run();
+    console.log(emailRes);
+
     res.json({messge : req.user.firstName + " is " + status + " in " + receiver.firstName, data});
   }catch(err){
     res.status(400).send(err.message);
