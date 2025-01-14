@@ -10,9 +10,6 @@ const jwt = require("jsonwebtoken");
 profileRouter.get("/profile/view", userAuth, async (req, res) =>{
     try{ 
       const user = req.user;
-      if (!user) {
-        return res.status(401).send('User not authenticated');
-      }
       res.send(user);
     }catch(err){
       res.status(400).send(err.message);

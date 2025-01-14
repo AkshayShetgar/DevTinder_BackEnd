@@ -40,6 +40,10 @@ const userSchema = mongoose.Schema(
         }
       },
     },
+    isPremium : {
+      type : Boolean,
+      default : false,
+    },
     photoUrl: {
       type: String,
       validate(value){

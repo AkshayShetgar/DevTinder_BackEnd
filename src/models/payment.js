@@ -30,10 +30,6 @@ const paymentSchema = new mongoose.Schema(
       type : String,
       required: true,
     },
-    isPremium : {
-      type : Boolean,
-      default : false,
-    },
     notes: {
       firstName: {
         type: String,
