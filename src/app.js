@@ -9,7 +9,7 @@ require("dotenv").config();
 require("../src/utils/cronJob");
 
 app.use(cors({
-  origin : "http://localhost:5173",
+  origin : ["http://localhost:5173","http://13.232.97.114"],
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
   credentials : true
 }));
