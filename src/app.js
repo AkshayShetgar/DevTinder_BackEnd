@@ -5,6 +5,9 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const port = 3000;
 require("dotenv").config();
+const http = require("http");
+const socket = require("socket.io");
+const {initializeSocket} = require("./utils/socket");
 
 require("../src/utils/cronJob");
 
@@ -21,19 +24,27 @@ const profileRouter = require("./routes/profile");
 const requestRouter = require("./routes/requests");
 const userRouter = require("./routes/users");
 const paymentRouter = require("./routes/payment");
+const chatRouter = require("./routes/chat");
 
 app.use("/", authRouter);
 app.use("/", profileRouter);
 app.use("/", requestRouter);
 app.use("/", userRouter);
 app.use("/", paymentRouter);
+app.use("/", chatRouter);
 
+const server = http.createServer(app);
+const io = socket(server, cors({
+  origin : "http://localhost:5173"
+}));
+
+initializeSocket(server);
 
 connectDB()
   .then(() => {
     console.log("succesfully Database connected");
-    app.listen(port, () => {
-      console.log("Server is created successfully...");
+    server.listen(port, () => {
+      console.log("Server is listening to port " + port);
     });
   })
   .catch((err) => console.error("Database cannot be connected"));

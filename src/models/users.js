@@ -59,6 +59,10 @@ const userSchema = mongoose.Schema(
       type: [String],
       minLength : 10,
     },
+    lastSeen : {
+      type : String,
+      default : null,
+    },
   },
   { timestamps: true }
 );
